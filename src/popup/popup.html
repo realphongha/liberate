@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Translate Anyway</h1>
+    <div class="status-row">
+      <span class="label">Status</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle">
+        <span class="slider"></span>
+      </label>
+      <span id="statusText" class="status-text">Enabled</span>
+    </div>
+    <div class="domain-row">
+      <span class="label">Current site</span>
+      <span id="domain" class="domain"></span>
+    </div>
+    <button id="siteAction" class="btn">Disable for this site</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
