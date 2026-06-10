@@ -1,24 +1,34 @@
-# Translate Anyway
+# Liberate
 
-A Chrome Extension (Manifest V3) that enables browser translation on websites that intentionally disable it using `translate="no"`, `class="notranslate"`, or `<meta name="google" content="notranslate">`.
+Restore browser features that websites intentionally disable.
+
+A Chrome Extension (Manifest V3) that restores browser functionality commonly disabled by websites.
+
+## Features
+
+- **Translate Unlock** — Remove `translate="no"`, `class="notranslate"`, and `<meta name="google" content="notranslate">`
+- **Right Click Unlock** — Neutralize `contextmenu` event blockers
+- **Selection Unlock** — Override `user-select: none` CSS and `selectstart` event blockers
+- **Copy Unlock** — Neutralize `copy` event blockers
+- **Drag Unlock** — Restore `dragstart` events for images, text, and links
+- **Keyboard Unlock** — Protect `Ctrl+C/V/A/F/S/P` from site hijacking
+
+## Philosophy
+
+> The website is running on my computer. I decide how my browser behaves.
 
 ## How It Works
 
-The extension runs at document start and removes translation-blocking attributes and elements before the page renders. A MutationObserver continuously handles dynamically injected content, ensuring compatibility with SPAs and modern web frameworks.
+The extension runs at `document_start` and uses:
+- **Event Interceptor** — Wraps `addEventListener`/`removeEventListener` to filter blocked events
+- **MutationObserver** — Handles dynamically injected content in SPAs
+- **CSS Injection** — Overrides restrictive styles
 
-- **Zero external requests** — all processing is local
-- **No data collection** — privacy-first design
-- **Install and forget** — no configuration required
-- Works on static sites, React, Vue, Angular, Next.js, and more
-
-## Installation
-
-1. Download from the Chrome Web Store (pending)
-2. No setup needed — translation blocking is automatically removed
+All processing is local. No external requests, no data collection, no telemetry.
 
 ## Permissions
 
-- `storage` — saves your preferences (enable/disable, per-site settings)
+- `storage` — saves your preferences (enable/disable, per-module toggles, per-site settings)
 - `activeTab` — displays the current site domain in the popup
 
 ## Development
@@ -26,19 +36,28 @@ The extension runs at document start and removes translation-blocking attributes
 ### Project Structure
 
 ```
-translate-anyway/
+Liberate
 ├── manifest.json
 ├── src/
+│   ├── core/
+│   │   ├── engine.js       # Module registration, config, domain matching
+│   │   ├── events.js        # Event interceptor (addEventListener wrapper)
+│   │   └── mutation.js      # Shared MutationObserver
+│   ├── modules/
+│   │   ├── translate.js     # Translate unlock
+│   │   ├── right-click.js   # Right click unlock
+│   │   ├── selection.js     # Selection unlock
+│   │   ├── copy.js          # Copy unlock
+│   │   ├── drag.js          # Drag unlock
+│   │   └── keyboard.js      # Keyboard shortcut protection
 │   ├── content/
-│   │   ├── scanner.js      # DOM scanning and attribute removal
-│   │   ├── observer.js      # MutationObserver for dynamic content
 │   │   └── content.js       # Main content script entry point
 │   ├── popup/
 │   │   ├── popup.html
 │   │   ├── popup.js
 │   │   └── popup.css
 │   └── storage/
-│       └── settings.js
+│       └── settings.js      # chrome.storage.sync wrapper
 ├── icons/
 ├── privacy-policy.md
 └── README.md
@@ -49,4 +68,8 @@ translate-anyway/
 1. Open `chrome://extensions`
 2. Enable Developer Mode
 3. Click "Load unpacked"
-4. Select the `translate-anyway` directory
+4. Select the `Liberate` directory
+
+## Architecture
+
+Every capability is an independent module that can be enabled or disabled. Modules register with the core engine, which handles configuration, domain matching, and logging. The event interceptor wraps `EventTarget.prototype.addEventListener` before page scripts run, preventing blocked events from being registered.

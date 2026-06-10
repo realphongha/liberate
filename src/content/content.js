@@ -1,72 +1,38 @@
 (function () {
-  let isActive = false;
-  let observer = null;
-
-  function getDomain() {
-    return window.location.hostname.replace(/^www\./, '');
+  function removeTranslateNo(element) {
+    if (element.nodeType !== Node.ELEMENT_NODE) return;
+    element.removeAttribute('translate');
+    element.classList.remove('notranslate');
+    element.classList.remove('google-src-text');
   }
 
-  function shouldBeActive(settings) {
-    if (!settings.enabled) return false;
-    const domain = getDomain();
-    if (settings.blacklist && settings.blacklist.includes(domain)) return false;
-    if (settings.whitelist && settings.whitelist.length > 0 && !settings.whitelist.includes(domain)) return false;
-    return true;
+  function removeMetaTags() {
+    const meta = document.querySelector('meta[name="google"][content="notranslate"]');
+    if (meta) meta.remove();
   }
 
-  function activate() {
-    if (isActive) return;
-    isActive = true;
-
+  function scanAll() {
     removeMetaTags();
-    scanElement(document.documentElement);
-
-    if (!observer) {
-      observer = createObserver((node) => {
-        if (!isActive) return;
-        removeMetaTags();
-        scanElement(node);
-      });
+    removeTranslateNo(document.documentElement);
+    const all = document.documentElement.querySelectorAll('*');
+    for (let i = 0; i < all.length; i++) {
+      removeTranslateNo(all[i]);
     }
   }
 
-  function deactivate() {
-    isActive = false;
-    if (observer) {
-      observer.disconnect();
-      observer = null;
-    }
+  scanAll();
+
+  document.addEventListener('DOMContentLoaded', scanAll);
+
+  function onSettingsChanged() {
+    LiberateSettings.getAll(function (settings) {
+      LiberateEngine.updateState(settings);
+    });
   }
 
-  function updateState(settings) {
-    if (shouldBeActive(settings)) {
-      activate();
-    } else {
-      deactivate();
-    }
-  }
-
-  chrome.storage.sync.get({ enabled: true, blacklist: [], whitelist: [] }, (result) => {
-    updateState(result);
+  LiberateSettings.getAll(function (settings) {
+    LiberateEngine.init(settings);
   });
 
-  chrome.storage.onChanged.addListener((changes) => {
-    const updates = {};
-    if (changes.enabled !== undefined) updates.enabled = changes.enabled.newValue;
-    if (changes.blacklist !== undefined) updates.blacklist = changes.blacklist.newValue;
-    if (changes.whitelist !== undefined) updates.whitelist = changes.whitelist.newValue;
-    if (Object.keys(updates).length > 0) {
-      chrome.storage.sync.get({ enabled: true, blacklist: [], whitelist: [] }, (result) => {
-        updateState(result);
-      });
-    }
-  });
-
-  removeMetaTags();
-  scanElement(document.documentElement);
-
-  document.addEventListener('DOMContentLoaded', () => {
-    removeMetaTags();
-    scanElement(document.documentElement);
-  });
+  LiberateSettings.onChanged(onSettingsChanged);
 })();

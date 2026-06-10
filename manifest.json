@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Translate Anyway",
-  "version": "1.0.0",
-  "description": "Enable browser translation on websites that disable translation.",
+  "name": "Liberate",
+  "version": "2.0.0",
+  "description": "Restore browser features that websites intentionally disable. Supports translation, right-click, selection, copy, drag, and keyboard shortcuts.",
   "permissions": [
     "storage",
     "activeTab"
@@ -11,8 +11,16 @@
     {
       "matches": ["<all_urls>"],
       "js": [
-        "src/content/scanner.js",
-        "src/content/observer.js",
+        "src/core/events.js",
+        "src/core/mutation.js",
+        "src/core/engine.js",
+        "src/storage/settings.js",
+        "src/modules/translate.js",
+        "src/modules/right-click.js",
+        "src/modules/selection.js",
+        "src/modules/copy.js",
+        "src/modules/drag.js",
+        "src/modules/keyboard.js",
         "src/content/content.js"
       ],
       "run_at": "document_start"
@@ -20,7 +28,7 @@
   ],
   "action": {
     "default_popup": "src/popup/popup.html",
-    "default_title": "Translate Anyway"
+    "default_title": "Liberate"
   },
   "icons": {
     "16": "icons/icon16.png",
