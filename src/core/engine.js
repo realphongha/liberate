@@ -1,6 +1,7 @@
 const LiberateEngine = (function () {
   const modules = {};
   let currentSettings = null;
+  const manualOverrides = {};
 
   function getDomain() {
     return window.location.hostname.replace(/^www\./, '');
@@ -11,16 +12,23 @@ const LiberateEngine = (function () {
   }
 
   function getModuleSettings(moduleName) {
-    if (!currentSettings) return true;
+    if (!currentSettings) return false;
     if (!currentSettings.enabled) return false;
+
+    if (manualOverrides[moduleName] !== undefined) {
+      return manualOverrides[moduleName];
+    }
 
     const domain = getDomain();
     const siteRule = currentSettings.siteRules && currentSettings.siteRules[domain];
 
-    if (siteRule && siteRule.enabled === false) return false;
-    if (siteRule && siteRule.modules && siteRule.modules[moduleName] === false) return false;
+    if (siteRule && siteRule.modules && siteRule.modules[moduleName] === false) {
+      return false;
+    }
 
-    if (currentSettings.modules && currentSettings.modules[moduleName] === false) return false;
+    if (currentSettings.modules && currentSettings.modules[moduleName] !== undefined) {
+      return currentSettings.modules[moduleName];
+    }
 
     return true;
   }
@@ -49,8 +57,28 @@ const LiberateEngine = (function () {
     }
   }
 
+  function refreshModule(name) {
+    if (getModuleSettings(name)) {
+      activateModule(name);
+    } else {
+      deactivateModule(name);
+    }
+  }
+
+  function toggleModule(name, enabled) {
+    manualOverrides[name] = enabled;
+    refreshModule(name);
+  }
+
+  function clearOverrides() {
+    for (const name in manualOverrides) {
+      delete manualOverrides[name];
+    }
+  }
+
   function updateState(settings) {
     currentSettings = settings;
+    clearOverrides();
 
     if (!settings.enabled) {
       for (const name in modules) {
@@ -63,11 +91,7 @@ const LiberateEngine = (function () {
     LiberateMutation.init();
 
     for (const name in modules) {
-      if (getModuleSettings(name)) {
-        activateModule(name);
-      } else {
-        deactivateModule(name);
-      }
+      refreshModule(name);
     }
 
     const domain = getDomain();
@@ -80,5 +104,8 @@ const LiberateEngine = (function () {
     updateState(settings);
   }
 
-  return { registerModule, init, updateState, getDomain, log };
+  return {
+    registerModule, init, updateState, getDomain, log,
+    toggleModule, refreshModule, getModuleSettings,
+  };
 })();

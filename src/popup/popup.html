@@ -16,6 +16,9 @@
       </label>
       <span id="statusText" class="status-text">Enabled</span>
     </div>
+    <div class="domain-header">
+      <span class="label" id="domainLabel">example.com</span>
+    </div>
     <div class="module-list" id="moduleList">
       <div class="module-item" data-module="translate">
         <span class="label">Translate Unlock</span>
@@ -60,11 +63,8 @@
         </label>
       </div>
     </div>
-    <div class="domain-row">
-      <span class="label">Current site</span>
-      <span id="domain" class="domain"></span>
-    </div>
-    <button id="siteAction" class="btn">Disable for this site</button>
+    <button id="disableAllBtn" class="btn btn-off">Disable all for this site</button>
+    <button id="resetSiteBtn" class="btn btn-reset">Reset site to defaults</button>
   </div>
   <script src="popup.js"></script>
 </body>
