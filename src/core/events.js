@@ -1,15 +1,12 @@
 const LiberateEvents = (function () {
   const interceptedTypes = new Set();
   const captureHandlers = new Map();
-  let keyboardHandler = null;
   let initialized = false;
 
   const ORIGINAL = {
     addEventListener: EventTarget.prototype.addEventListener,
     removeEventListener: EventTarget.prototype.removeEventListener,
   };
-
-  const PROTECTED_KEYS = new Set(['c', 'v', 'a', 'f', 's', 'p']);
 
   function init() {
     if (initialized) return;
@@ -30,16 +27,6 @@ const LiberateEvents = (function () {
       }
       return origRemove.call(this, type, listener, options);
     };
-
-    keyboardHandler = function (e) {
-      if (e.ctrlKey || e.metaKey) {
-        if (PROTECTED_KEYS.has(e.key.toLowerCase())) {
-          e.stopImmediatePropagation();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', keyboardHandler, true);
   }
 
   function intercept(eventType) {

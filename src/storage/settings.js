@@ -6,8 +6,6 @@ const LiberateSettings = (function () {
       rightClick: true,
       selection: true,
       copy: true,
-      drag: true,
-      keyboard: true,
     },
     siteRules: {},
     blacklist: [],

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Liberate",
-  "version": "2.0.0",
-  "description": "Restore browser features that websites intentionally disable. Supports translation, right-click, selection, copy, drag, and keyboard shortcuts.",
+  "version": "0.1.0",
+  "description": "Restore browser features that websites disable.",
   "permissions": [
     "storage",
     "activeTab"
@@ -19,8 +19,6 @@
         "src/modules/right-click.js",
         "src/modules/selection.js",
         "src/modules/copy.js",
-        "src/modules/drag.js",
-        "src/modules/keyboard.js",
         "src/content/content.js"
       ],
       "run_at": "document_start"

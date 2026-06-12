@@ -1,21 +1,19 @@
 # Liberate
 
-Restore browser features that websites intentionally disable.
+Restore browser features that websites disable.
 
 A Chrome Extension (Manifest V3) that restores browser functionality commonly disabled by websites.
 
 ## Features
 
-- **Translate Unlock** — Remove `translate="no"`, `class="notranslate"`, and `<meta name="google" content="notranslate">`
-- **Right Click Unlock** — Neutralize `contextmenu` event blockers
-- **Selection Unlock** — Override `user-select: none` CSS and `selectstart` event blockers
-- **Copy Unlock** — Neutralize `copy` event blockers
-- **Drag Unlock** — Restore `dragstart` events for images, text, and links
-- **Keyboard Unlock** — Protect `Ctrl+C/V/A/F/S/P` from site hijacking
+- **Allow Translate** — Remove `translate="no"`, `class="notranslate"`, and `<meta name="google" content="notranslate">`
+- **Allow Selection** — Override `user-select: none` CSS and `selectstart` event blockers
+- **Allow Copy** — Neutralize `copy` event blockers
+- **Allow Right Click** — Neutralize `contextmenu` event blockers
 
 ## Philosophy
 
-> The website is running on my computer. I decide how my browser behaves.
+> Websites should not prevent users from reading, translating, selecting, copying, or interacting with content.
 
 ## How It Works
 
@@ -45,11 +43,9 @@ Liberate
 │   │   └── mutation.js      # Shared MutationObserver
 │   ├── modules/
 │   │   ├── translate.js     # Translate unlock
-│   │   ├── right-click.js   # Right click unlock
 │   │   ├── selection.js     # Selection unlock
 │   │   ├── copy.js          # Copy unlock
-│   │   ├── drag.js          # Drag unlock
-│   │   └── keyboard.js      # Keyboard shortcut protection
+│   │   └── right-click.js   # Right click unlock
 │   ├── content/
 │   │   └── content.js       # Main content script entry point
 │   ├── popup/
@@ -70,6 +66,22 @@ Liberate
 3. Click "Load unpacked"
 4. Select the `Liberate` directory
 
+(or just install the published version from the Chrome Web Store 😹)
+
 ## Architecture
 
 Every capability is an independent module that can be enabled or disabled. Modules register with the core engine, which handles configuration, domain matching, and logging. The event interceptor wraps `EventTarget.prototype.addEventListener` before page scripts run, preventing blocked events from being registered.
+
+## FAQ
+
+Q: Can you add feature X?
+A: Maybe. PRs are welcome.
+
+Q: I found a bug.
+A: Please open an issue with reproduction steps.
+
+Q: The code quality seems questionable.
+A: Correct.
+
+Q: Is this AI-generated?
+A: Parts of it are. The bugs are handcrafted.
