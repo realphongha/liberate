@@ -1,0 +1,33 @@
+# Project
+liberate-v*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build / Release
+dist/
+build/
+release/
+
+# Coverage
+coverage/
+
+# Environment
+.env
+.env.*
+
+# Python (for utility scripts)
+__pycache__/
+*.pyc
